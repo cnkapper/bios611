@@ -1,0 +1,12 @@
+---
+title: "Project Progress"
+author: "Carolina Kapper"
+date: "2023-10-25"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+hello world
