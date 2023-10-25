@@ -9,4 +9,19 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-hello world
+```{r echo=FALSE message = FALSE}
+library(tidyverse)
+df <- readr::read_csv("~/work/medstudentdata.csv", show_col_types = F)
+```
+
+```{r}
+ggplot(data = df, mapping = aes(group = as.factor(year), y = mbi_ex)) + geom_boxplot() + 
+  labs(x = "Year", y = "Exhaustion Score", 
+       title = "Distribution of Exhaustion Scores for Each Year")
+
+ggplot(data = df, mapping = aes(group = job, x = age)) + geom_bar() + 
+  facet_grid(cols = vars(job)) + 
+  labs(title = "Distribution of Ages for Students With and Without Jobs")
+
+```
+

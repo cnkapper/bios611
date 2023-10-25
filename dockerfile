@@ -13,5 +13,6 @@ RUN R -e "tinytex::install_tinytex()"
 
 RUN R -e "install.packages(\"readr\")"
 RUN R -e "install.packages(\"tidyverse\")"
+RUN R -e "install.packages(\"markdown\")"
 
-INCLUDE "RMDMakefile" src Makefile
+RUN apt install build-essential -y --no-install-recommends
