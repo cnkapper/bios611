@@ -1,27 +1,19 @@
 ---
 title: "Project Progress"
 author: "Carolina Kapper"
-date: "2023-10-25"
-output: pdf_document
+date: "2023-12-14"
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r echo=FALSE message = FALSE}
+```{r echo=FALSE, message = FALSE}
 library(tidyverse)
 df <- readr::read_csv("~/work/medstudentdata.csv", show_col_types = F)
 ```
 
-```{r}
-ggplot(data = df, mapping = aes(group = as.factor(year), y = mbi_ex)) + geom_boxplot() + 
-  labs(x = "Year", y = "Exhaustion Score", 
-       title = "Distribution of Exhaustion Scores for Each Year")
+![Figure 1](kapper_figure1.png)
 
-ggplot(data = df, mapping = aes(group = job, x = age)) + geom_bar() + 
-  facet_grid(cols = vars(job)) + 
-  labs(title = "Distribution of Ages for Students With and Without Jobs")
-
-```
-
+![Figure 2](kapper_figure2.png)
