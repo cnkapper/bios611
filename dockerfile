@@ -14,6 +14,8 @@ RUN R -e "tinytex::install_tinytex()"
 RUN R -e "install.packages(\"readr\")"
 RUN R -e "install.packages(\"tidyverse\")"
 RUN R -e "install.packages(\"rmarkdown\")"
+RUN R -e "install.packages(\"psych\")"
+RUN R -e "install.packages(\"markdown\")"
 
 RUN apt install build-essential -y --no-install-recommends
 RUN apt-get install -y --no-install-recommends libxt6

@@ -1,5 +1,5 @@
 ---
-title: "Project Progress"
+title: "BIOS 611 Project"
 author: "Carolina Kapper"
 date: "2023-12-14"
 output: html_document
@@ -14,6 +14,83 @@ library(tidyverse)
 df <- readr::read_csv("~/work/medstudentdata.csv", show_col_types = F)
 ```
 
-![Figure 1](kapper_figure1.png)
+## Introduction
 
-![Figure 2](kapper_figure2.png)
+The data set, `medstudentdata.csv`, contains information about Swiss medical students across all six years of medical school, including important demographic information, their employment and marital statuses, and their overall satisfaction with their health and their job. Also included in the data set are the students' scores on several empathy tests, the Center for Epidemiologic Studies Depression scale, the State-Trait anxiety inventory scale, and exhaustion, cynicism, and professional efficacy scores from the Maslach Burnout Inventory test. In total, 886 students completed all of the exams are are included in the data set.
+
+In the project below, I explore the variables and their associations, and attempt to predict the year of each student based on their scores on the empathy, depression, anxiety, and burnout tests, hoping to find an association between the students' year in school and these mental health assessments. 
+
+
+## Exploration of the Data
+
+To begin my analysis, I wanted to investigate the similarities and differences in the Swiss medical students and American medical students by comparing the demographic and student information to the American medical system. First, I aim to visualize the distributions of both the students' ages and years in medical school. Figure 1 displays the distributions of the students' ages, and Figure 2 shows the frequencies of the students' years. 
+
+![Figure 1: Distributions of student ages](age_dist.png)
+
+Figure 1 tells us that the ages of students range from 17 to 49, with most of the students being between 18 and 27 years old. The distribution is right-skewed, with very few students being significantly older than the others. The average age appears to be around 23 years old. This seems to align very closely with the American medical school system, although the average age may be slightly greater since American students are typically in undergraduate training until age 21 or 22.
+
+![Figure 2: Frequency of school years](year_freq.png)
+
+In Figure 2, we see that roughly twice as many first year students completed the assessments than students in any other year. Nearly 250 students in their first year of medical school are included in the data set, and 100-150 students in each of years 2 through 6 are also included. This may explain the lower average student age than we would expect based on knowledge of American medical students.
+
+Next, I wished to learn more about the students in each of the categories of the `job` and `sex` variables---students who do and do not have jobs, and students who identify as male, female, or non-binary---and how those categories interact with the `age` and `year` variables. Figure 3 compares the distribution of ages for students who do and do not have jobs, and Figure 4 compares students in each of the 3 sex categories in each year of school.
+
+![Figure 3: Distributions of ages for students with and without jobs](kapper_figure2.png)
+
+As seen in Figure 3, students with jobs outside of school tend to be older than students without jobs. Based on knowledge of the American education system, this observation seems logical, as often times older students are students who return to school after working for a few years, and often they continue to work while they pursue their degrees. Younger students are more likely to have come directly from previous levels of study. In this way, the Swiss medical education seems quite similar to the American system.
+
+```{r, message = F}
+readr::read_csv("year_sex_table.csv", show_col_types = F)[, -1]
+```
+
+In Figure 4, the columns represent the students' year in medical school, and the rows represent the sex with which the students most closely identify, with a value of 1 representing Male, 2 Female, and 3 Non-Binary. It can be seen that there are many more female students than any other identity, especially in the first year group (over three times as many female students than male). There are also very few responses from non-binary students, with no more than two per year. This distribution is quite unlike American medical schools, where (as of recent years) the numbers of male and female students are closer to even, and there is likely more presence from non-binary students.
+
+Finally, I wanted to analyze the correlations between the variables to see which variables may be correlated with one another. Figure 5 shows the correlation matrix between all variables in the data set, except the identification variable `id`.
+
+![Figure 5: Correlation Matrix](cor_plot.png)
+
+Some correlations between variables are expected, such as the positive correlation between `age` and `year` (older students are often further along in school than younger students) and the relationships between the Maslach Burnout Index (MBI) variables (positive correlations between exhaustion and cynicism, negative correlations from both exhaustion and cynicism with efficacy). An unexpected relationship appears between `year` and weekly study time (`stud_h`), where a moderate negative association is present, implying that more senior students spend less time studying than younger students. Additionally, the Center for Epidemiologic Studies Depression index score `cesd` is moderately correlated with the MBI scores, implying that the results of the two tests are consistent with one another. With this knowledge, we move into the prediction task.
+
+## Prediction Models
+
+The goal for the prediction models is to correctly predict the year of school for each student based on their mental health assessment scores. Two types of prediction models will be used, first the k-Nearest Neighbors model, and next the Logistic Regression model.
+
+### k-Nearest Neighbors
+
+In k-nearest neighbors prediction, new observations are classified into a level of the dependent variable based on where they fall in the range of independent variables for the observations on which the model is trained. The `k` nearest training observations (most often in terms of Euclidean distance) to the new observation determine the new observation's level based on their own, like a vote where majority rules (in R, ties are broken randomly). A confusion matrix is built from the predicted levels and the true levels of the test observations, and success is determined by accuracy, the proportion of test observations sorted into the correct level. There are many different methods for selecting `k`, but for simplicity, our `k` is arbitrarily is set to 6.
+
+To create the training and testing sets, a random set of numbers between 1 and the total number of observations (in our case, 886) is selected without replacement until roughly 90% of the observations are selected. These 90% make up the training set, the set on which the model will be trained. The remaining 10% of observations create the testing set, which is used to assess the accuracy of the model.
+
+The dependent variable of our model is the `year` variable, and our dependent variables are the students' scores on all 9 of the mental health assessments. The results of the k-nearest neighbors model are shown in Figure 6.
+
+```{r, message = F}
+readr::read_csv("knn_matrix.csv", show_col_types = F)[, -1]
+```
+
+The accuracy of the kNN model is 0.3370787, so the model is accurately classifying roughly 34% of the observations. With 6 categories, randomly sorting the observations would (in theory) result in a 16-17% accuracy, so our model is performing twice as well as random chance. 
+
+To potentially produce a more accurate and applicable model, we can run the same model with a binary output variable, `upper`, which is an indicator created from the `year` variable that takes on a value of 1 if the student is in years 4-6 (upperclassmen) and a 0 if the student is in years 1-3 (underclassmen). The new model's confusion matrix is seen in Figure 7.
+
+```{r, message = F}
+readr::read_csv("knn_new.csv", show_col_types = F)[, -1]
+```
+
+The accuracy of the kNN model is 0.6179775, so the model is accurately classifying roughly 62% of the observations. With 2 categories, randomly sorting the observations would (in theory) result in a 50% accuracy, so our model is performing 12% better than random assignment. This model has the potential to be much more applicable if Swiss students can be grouped in this way as they are in schools in the United States. 
+
+### Logistic Regression
+
+Logistic regression is another very popular classification technique, where a linear combination of the independent variables is used to calculate the log-likelihood of the observation falling into one group over the other. This formula is best visualized as $ln(\frac{p}{1-p}) = \beta_0 + \beta_1 * x_1 + ... + \beta_n * x_n$, where $p$ is the probability that the observation is in the selected class. Confusion matrices and accuracy calculations can also be used to assess success.
+
+As in the second kNN model, our independent variables are the students' scores on all 9 of the mental health assessments, and the independent variables is the binary `upper` variable. The results of this model can be seen below.
+
+```{r, message = F}
+readr::read_csv("log_res.csv", show_col_types = F)[, -1]
+```
+
+The accuracy of the logistic regression model is 0.6966292, so the model is accurately classifying roughly 70% of the observations. Again, with 2 categories, randomly sorting the observations would (in theory) result in a 50% accuracy, so our model is performing 20% better than random chance and 12% better than the kNN model.
+
+## Conclusion and Suggestions for Future Work
+
+While the mental health assessments are not the best predictors of school year, they do perform better than random chance. If Swiss medical school systems are as similar to American systems as suggested by the preliminary data analysis, the classification of students as upperclassmen or underclassmen proves to be much more successful. The logistic regression model is the most successful of the 3 models used. 
+
+For future analysis, I would suggest an extension of the kNN models. New models could include other information about the students, such as the information about study time and health satisfaction. I would also suggest the creation of an elbow plot to determine the optimal value of `k` based on error rates. With these extensions, a more accurate prediction of `year` might be obtained. 
