@@ -1,3 +1,4 @@
+#creates knn model, year as dependent
 library(class)
 df <- readr::read_csv("~/work/medstudentdata.csv")
 

@@ -1,3 +1,4 @@
+#distribution of student ages (wrt job variable)
 library(tidyverse)
 df <- readr::read_csv("~/work/medstudentdata.csv")
 

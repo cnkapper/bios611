@@ -1,3 +1,4 @@
+#creates logistic regression model and output table, calculates accuracy
 library(tidyverse)
 
 df <- readr::read_csv("~/work/medstudentdata.csv", show_col_types = F)

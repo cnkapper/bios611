@@ -1,3 +1,4 @@
+#bar graph of student years
 library(tidyverse)
 
 df <- readr::read_csv("~/work/medstudentdata.csv", show_col_types = F)

@@ -1,3 +1,4 @@
+#creates second knn model, "upper" as dependent
 library(class)
 df <- readr::read_csv("~/work/medstudentdata.csv")
 df$upper <- ifelse(df$year > 3, 1, 0)

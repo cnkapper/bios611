@@ -1,3 +1,4 @@
+#creates correlation plot
 library(psych)
 
 df <- readr::read_csv("~/work/medstudentdata.csv", show_col_types = F)
