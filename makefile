@@ -11,7 +11,7 @@ clean:
 	rm -rf log_res.csv
 	rm -rf kapper_project.html
 
-	
+
 kapper_figure2.png: createfile2.R medstudentdata.csv
 	Rscript createfile2.R
 	

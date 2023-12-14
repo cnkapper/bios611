@@ -10,7 +10,6 @@ RUN apt-get update && \
 
 RUN R -e "install.packages(\"tinytex\")"
 RUN R -e "tinytex::install_tinytex()"
-
 RUN R -e "install.packages(\"readr\")"
 RUN R -e "install.packages(\"tidyverse\")"
 RUN R -e "install.packages(\"rmarkdown\")"
